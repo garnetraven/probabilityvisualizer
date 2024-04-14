@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function Dashboard() {
   const [drawnCardsInfo, setDrawnCardsInfo] = useState(null);
   const [error, setError] = useState(null);
+  const [numDraws, setNumDraws] = useState(5); // Default value
 
-  useEffect(() => {
-    // Fetch drawn cards information from the API when the component mounts
-    axios.post('http://localhost:5001/draw', { num_draws: 5 }) // Change num_draws as needed
+  const handleDraw = () => {
+    // Fetch drawn cards information from the API with the selected number of draws
+    axios.post('http://localhost:5001/draw', { num_draws: numDraws })
       .then(response => {
         setDrawnCardsInfo(response.data.drawn_cards_info);
       })
@@ -15,11 +17,23 @@ function Dashboard() {
         console.error('Error fetching drawn cards information:', error);
         setError('Failed to fetch drawn cards information. Please try again later.');
       });
-  }, []); // Empty dependency array to ensure the effect runs only once
+  };
 
   return (
     <>
       <h1>Welcome to Your Dashboard</h1>
+      <div>
+        <label htmlFor="numDrawsInput">Number of Draws:</label>
+        <input
+          type="number"
+          id="numDrawsInput"
+          value={numDraws}
+          onChange={(e) => setNumDraws(parseInt(e.target.value))}
+          min={1}
+          max={52}
+        />
+      </div>
+      <button onClick={handleDraw}>Draw Cards</button>
       {error && <p>{error}</p>}
       {drawnCardsInfo && (
         <div>
@@ -37,6 +51,7 @@ function Dashboard() {
           </ul>
         </div>
       )}
+      <Link to="/">Home</Link>
     </>
   );
 }

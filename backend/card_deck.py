@@ -1,7 +1,4 @@
-# Author: Corbin Lienau
-
 import random
-
 
 # Define a class representing a deck of playing cards
 class CardDeck:
